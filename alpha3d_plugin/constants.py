@@ -12,11 +12,15 @@ ADDON_ID = __package__
 
 # API host (NestJS backend). Overridable per-install in the add-on
 # preferences so we can point at staging / localhost during dev.
-DEFAULT_BASE_URL = "https://api.alpha3d.io"
+# NOTE: currently set to the LOCAL dev backend (port 4000). Restore to
+# "https://api.alpha3d.io" before packaging for release.
+DEFAULT_BASE_URL = "http://localhost:4000"
 
 # Web app host — where the browser-loopback login page lives
 # (`/plugin-auth?port=<loopback-port>`).
-DEFAULT_WEB_BASE_URL = "https://alpha3d.io"
+# NOTE: currently set to the LOCAL dev frontend (port 3000). Restore to
+# "https://alpha3d.io" before packaging for release.
+DEFAULT_WEB_BASE_URL = "http://localhost:3000"
 
 # How long the loopback listener waits for the browser to hand back a
 # token before giving up (seconds).
