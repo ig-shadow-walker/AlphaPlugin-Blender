@@ -1,10 +1,10 @@
-"""Operators: auth, tools, chat."""
+"""Operators: auth, tools, generate, chat."""
 
 import bpy
 
-from . import auth, chat, tools
+from . import auth, chat, generate, tools
 
-_submodules = (auth, tools, chat)
+_submodules = (auth, tools, generate, chat)
 
 
 def register():

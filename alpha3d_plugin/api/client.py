@@ -8,6 +8,7 @@ back to the UI).
 """
 
 import json
+import shutil
 import urllib.error
 import urllib.request
 
@@ -80,6 +81,28 @@ class Alpha3DClient:
 
     def post(self, path, body=None):
         return self.request("POST", path, body)
+
+    # ── binary download ──────────────────────────────────────────────
+
+    def download(self, url, dest_path, timeout=180):
+        """Stream an ABSOLUTE url to `dest_path`. Returns `dest_path`.
+
+        For presigned result URLs (DigitalOcean Spaces): the request is
+        built from `url` directly (not base_url + path) and deliberately
+        sends NO Authorization header — the signature lives in the query
+        string and the asset host is not our API. A longer default
+        timeout covers multi-MB GLBs.
+        """
+        req = urllib.request.Request(url, method="GET")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                with open(dest_path, "wb") as out:
+                    shutil.copyfileobj(resp, out)
+        except urllib.error.HTTPError as exc:
+            raise ApiError(exc.code, f"Download failed: {exc.reason}")
+        except urllib.error.URLError as exc:
+            raise ApiError(0, f"Download failed: {exc.reason}")
+        return dest_path
 
     # ── Server-Sent Events ───────────────────────────────────────────
 

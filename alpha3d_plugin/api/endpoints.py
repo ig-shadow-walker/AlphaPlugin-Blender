@@ -69,3 +69,55 @@ def list_posts(page=1, limit=12, status=None):
 def get_balance():
     """Alphred Agent credit balance."""
     return _client().get("/alphred/credits/balance")
+
+
+# ── Generation: text / image → 3D ────────────────────────────────────
+#
+# The backend has NO prompt-only text-to-3D: alpha-5-text_to_3d still
+# requires an image. The web app makes a FLUX text→image first, then
+# feeds that image into /alpha-5/create. We mirror that two-step flow.
+
+
+def text_to_image(prompt):
+    """FLUX text→image. Returns {success, imageData: <base64 JPEG>, ...}.
+
+    staticEnhancement=True (the web default) applies the black-bg / soft-
+    light treatment that makes a clean single-subject input for 3D.
+    """
+    return _client().post(
+        "/img-gen/text-to-image",
+        {
+            "prompt": prompt,
+            "resolution": "1K",
+            "ratio": "square",
+            "staticEnhancement": True,
+        },
+    )
+
+
+def submit_generation(body):
+    """POST /alpha-5/create. `body` carries generationType + imageBase64
+    (or imageUrl) + options. Returns {success, data:{post, hunyuanJobId}};
+    poll data.post.id. Do NOT include `user` — the backend sets it from
+    the JWT."""
+    return _client().post("/alpha-5/create", body)
+
+
+def poll_generation(post_id):
+    """POST /alpha-5/poll/:id — actively queries Tencent + mirrors result
+    files to Spaces. `post_id` is the post id from submit_generation, not
+    the Hunyuan job id. Done when data.post.status == 'completed'."""
+    return _client().post(f"/alpha-5/poll/{post_id}")
+
+
+def get_post(post_id):
+    """GET /alpha-5/posts/:id — owner-gated, plan-independent. Carries
+    data.downloadUrls.objFiles.glb (a presigned, directly-downloadable
+    Spaces URL, ~300s expiry)."""
+    return _client().get(f"/alpha-5/posts/{post_id}")
+
+
+def download_file(url, dest_path):
+    """Download a presigned result URL to a local path. No auth header
+    (the asset host is Spaces, not our API)."""
+    return Alpha3DClient("", None, timeout=180).download(url, dest_path)

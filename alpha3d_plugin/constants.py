@@ -23,8 +23,10 @@ DEFAULT_BASE_URL = "http://localhost:4000"
 DEFAULT_WEB_BASE_URL = "http://localhost:3000"
 
 # How long the loopback listener waits for the browser to hand back a
-# token before giving up (seconds).
-LOGIN_TIMEOUT_SECONDS = 180
+# token before giving up (seconds). Generous on purpose: the user may
+# tab away mid-login, and a closed listener surfaces as a confusing
+# ERR_CONNECTION_REFUSED on the web page's POST.
+LOGIN_TIMEOUT_SECONDS = 600
 
 # Curated Alpha3D tools surfaced in the Tools tab. Each entry is a stub
 # in Phase 0 — wired to real endpoints in later phases. `id` is passed

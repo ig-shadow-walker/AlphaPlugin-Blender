@@ -1,4 +1,9 @@
-"""Tools tab — every Alpha3D pipeline tool, individually runnable."""
+"""Tools tab — Alpha3D pipeline tools.
+
+Text / Image to 3D is live: it generates a model from a prompt or a
+reference image and imports it into the scene. The rest are stubs that
+report "coming soon" until later phases wire them up.
+"""
 
 import bpy
 
@@ -17,10 +22,32 @@ class ALPHA3D_PT_tools(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.enabled = is_connected()
+        connected = is_connected()
+        props = context.window_manager.alpha3d
 
+        # ── Text / Image to 3D (live) ────────────────────────────────
+        box = layout.box()
+        box.label(text="Text / Image to 3D", icon="MESH_MONKEY")
+
+        col = box.column()
+        col.enabled = connected and not props.gen_is_running
+        col.label(text="Describe a model, or pick a reference image:")
+        col.prop(props, "gen_prompt", text="")
+        col.prop(props, "gen_image_path", text="Image")
+        col.prop(props, "gen_enable_pbr")
+        col.operator("alpha3d.generate_3d", text="Generate", icon="PLAY")
+
+        if props.gen_is_running:
+            box.label(text=props.gen_status or "Working…", icon="SORTTIME")
+        elif props.gen_status:
+            box.label(text=props.gen_status, icon="INFO")
+
+        # ── Remaining pipeline tools (coming soon) ───────────────────
         col = layout.column(align=True)
+        col.enabled = connected
         for tool in TOOLS:
+            if tool["id"] == "generate_3d":
+                continue  # handled by the live section above
             op = col.operator(
                 "alpha3d.run_tool", text=tool["label"], icon=tool.get("icon", "DOT")
             )

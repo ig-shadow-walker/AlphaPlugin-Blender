@@ -37,6 +37,27 @@ class Alpha3DProps(bpy.types.PropertyGroup):
     # last error). Updated from the main thread only.
     status_text: StringProperty(default="")
 
+    # ── Tools tab: Text / Image to 3D ────────────────────────────────
+    gen_prompt: StringProperty(
+        name="Prompt",
+        description="Describe the model to generate",
+        default="",
+    )
+    gen_image_path: StringProperty(
+        name="Image",
+        description="Reference image for image-to-3D. Takes priority over the prompt",
+        default="",
+        subtype="FILE_PATH",
+    )
+    gen_enable_pbr: BoolProperty(
+        name="PBR textures",
+        description="Generate PBR texture maps. Costs more credits",
+        default=False,
+    )
+    # Generation progress, updated from the main thread only.
+    gen_is_running: BoolProperty(default=False)
+    gen_status: StringProperty(default="")
+
 
 classes = (Alpha3DChatMessage, Alpha3DProps)
 
