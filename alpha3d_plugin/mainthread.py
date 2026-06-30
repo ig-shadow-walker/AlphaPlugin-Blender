@@ -43,6 +43,42 @@ def _drain():
     return 0.2
 
 
+def run_in_view3d_context(fn):
+    """Run `fn` (which invokes a bpy operator) under a window / VIEW_3D context
+    override. MAIN THREAD ONLY.
+
+    Operators like `import_scene.gltf` invoked from this module's timer-drain
+    callback have no active window/area in `bpy.context` and can fail a
+    poll/context check ("context is incorrect"). Wrapping the call in a
+    temp_override with a real window (and a 3D viewport when one exists) gives
+    them the context they expect. Falls back to a direct call when no window
+    or `temp_override` is available (older Blender / headless).
+    """
+    wm = bpy.context.window_manager
+    win = wm.windows[0] if (wm and wm.windows) else None
+    temp_override = getattr(bpy.context, "temp_override", None)
+    if win is None or temp_override is None:
+        fn()
+        return
+    ctx = {"window": win}
+    screen = getattr(win, "screen", None)
+    if screen:
+        for area in screen.areas:
+            if area.type == "VIEW_3D":
+                ctx["area"] = area
+                region = next(
+                    (r for r in area.regions if r.type == "WINDOW"), None
+                )
+                if region:
+                    ctx["region"] = region
+                break
+    try:
+        with temp_override(**ctx):
+            fn()
+    except TypeError:
+        fn()  # temp_override signature mismatch — best effort
+
+
 def tag_redraw_all():
     """Force every visible region to redraw.
 

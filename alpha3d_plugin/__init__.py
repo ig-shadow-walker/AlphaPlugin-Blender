@@ -1,13 +1,12 @@
-"""Alpha3D for Blender — the full AI 3D pipeline and the Alphred
-assistant, inside Blender.
+"""Alpha3D for Blender — the full AI 3D pipeline, inside Blender.
 
-Architecture (Phase 0 scaffold):
+Architecture:
   • constants / preferences / properties — config + persisted token + transient UI state
   • mainthread                            — bpy-safe queue drained by a bpy.app.timers tick
   • api/                                   — stdlib HTTP client + endpoint wrappers (no deps)
   • auth/                                  — browser-loopback login
-  • operators/                            — auth, tools (stubs), chat (live SSE)
-  • panels/                               — Alpha3D sidebar: Tools · Library · Assistant
+  • operators/                            — auth, tools, generate, library
+  • panels/                               — Alpha3D sidebar: Tools · Library
 
 Install: zip the `alpha3d_plugin/` folder and Install from Disk, or copy
 it into your Blender addons directory.
@@ -16,10 +15,10 @@ it into your Blender addons directory.
 bl_info = {
     "name": "Alpha3D",
     "author": "Alpha3D",
-    "version": (0, 1, 0),
+    "version": (0, 6, 1),
     "blender": (4, 0, 0),
     "location": "View3D > Sidebar (N) > Alpha3D",
-    "description": "Alpha3D's AI 3D pipeline tools and the Alphred assistant, inside Blender.",
+    "description": "Alpha3D's AI 3D pipeline tools, inside Blender.",
     "category": "3D View",
 }
 

@@ -1,10 +1,31 @@
-"""Sidebar panels: connection header, Tools, Library, Assistant."""
+"""Sidebar panels: connection header, Tools, Smart Retopology, UV Unwrap,
+AI Texturing, AI Segmentation, AI Rigging, Library, Uploads, Asset Tagging.
 
-from . import assistant, library, main, tools
+UV Unwrap, AI Texturing and Asset Tagging are link-out panels (they open the
+web app): Tencent's UV/texturing pipelines run against your generation's
+original mesh and tagging operates on your saved library, so they aren't run
+from a Blender re-export."""
 
-# main first so its CATEGORY/SPACE/REGION constants import cleanly into
-# the others, and so bl_order places it at the top.
-_submodules = (main, tools, library, assistant)
+from . import (
+    library,
+    main,
+    retopology,
+    rigging,
+    segmentation,
+    tagging,
+    texturing,
+    tools,
+    uploads,
+    uvunwrap,
+)
+
+# main first so its CATEGORY/SPACE/REGION constants import cleanly into the
+# others, and so bl_order places it at the top. library before uploads so
+# uploads can import the shared draw helpers from it.
+_submodules = (
+    main, tools, retopology, uvunwrap, texturing, segmentation, rigging,
+    library, uploads, tagging,
+)
 
 
 def register():

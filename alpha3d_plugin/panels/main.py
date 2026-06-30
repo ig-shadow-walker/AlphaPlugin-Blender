@@ -2,6 +2,7 @@
 
 import bpy
 
+from ..operators import notice
 from ..preferences import is_connected
 
 # Shared sidebar location for every Alpha3D panel.
@@ -22,6 +23,18 @@ class ALPHA3D_PT_main(bpy.types.Panel):
         layout = self.layout
         props = context.window_manager.alpha3d
         connected = is_connected()
+
+        # Dismissible notice (e.g. a finished generation). Pinned to the top
+        # of the Alpha3D tab so it's visible regardless of which sub-panel
+        # is expanded; the X clears it.
+        message, icon = notice.current()
+        if message:
+            banner = layout.box()
+            row = banner.row(align=True)
+            row.label(text=message, icon=icon)
+            close = row.row(align=True)
+            close.alignment = "RIGHT"
+            close.operator("alpha3d.dismiss_notice", text="", icon="X", emboss=False)
 
         row = layout.row(align=True)
         if connected:

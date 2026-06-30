@@ -12,15 +12,14 @@ ADDON_ID = __package__
 
 # API host (NestJS backend). Overridable per-install in the add-on
 # preferences so we can point at staging / localhost during dev.
-# NOTE: currently set to the LOCAL dev backend (port 4000). Restore to
-# "https://api.alpha3d.io" before packaging for release.
-DEFAULT_BASE_URL = "http://localhost:4000"
+# Production = the DigitalOcean app host. For LOCAL dev point this at
+# "http://localhost:4000" in the add-on prefs (don't commit that here).
+DEFAULT_BASE_URL = "https://apha3d-backend-6nxtf.ondigitalocean.app"
 
 # Web app host — where the browser-loopback login page lives
-# (`/plugin-auth?port=<loopback-port>`).
-# NOTE: currently set to the LOCAL dev frontend (port 3000). Restore to
-# "https://alpha3d.io" before packaging for release.
-DEFAULT_WEB_BASE_URL = "http://localhost:3000"
+# (`/plugin-auth?port=<loopback-port>`). For LOCAL dev point this at
+# "http://localhost:3000" in the add-on prefs (don't commit that here).
+DEFAULT_WEB_BASE_URL = "https://alpha3d.io"
 
 # How long the loopback listener waits for the browser to hand back a
 # token before giving up (seconds). Generous on purpose: the user may
@@ -38,6 +37,62 @@ TOOLS = (
     {"id": "texture", "label": "AI Texture", "icon": "TEXTURE"},
     {"id": "rigging", "label": "Auto Rig", "icon": "ARMATURE_DATA"},
     {"id": "segmentation", "label": "Segment Parts", "icon": "MOD_EXPLODE"},
-    {"id": "convert", "label": "Convert Format", "icon": "FILE_REFRESH"},
     {"id": "tag_asset", "label": "Tag Asset", "icon": "BOOKMARKS"},
 )
+
+# Generation quality tiers. These mirror the web app's GenerationBox
+# `meshMode` exactly (generationBox.tsx + utils/meshFaceCount.ts): same
+# generateType / octreeResolution / face-count band per tier, so a job
+# submitted from Blender is identical to one from the website.
+#   High-Res / Ultra      -> generateType "Normal" (octree 2 vs 3)
+#   Low-Poly              -> generateType "LowPoly" (octree 1, PBR forced off,
+#                            hunyuanModel "3.0", explicit polygonType)
+QUALITY_TABLE = {
+    "HIGH_RES": {
+        "label": "High-Res",
+        "blurb": "200K-500K polygons - quality texture",
+        "generate_type": "Normal",
+        "octree": 2,
+        "face_default": 200_000,
+        "face_min": 200_000,
+        "face_max": 500_000,
+        "allows_pbr": True,
+    },
+    "ULTRA_HIGH_RES": {
+        "label": "Ultra High-Res",
+        "blurb": "500K-1.5M polygons - quality texture",
+        "generate_type": "Normal",
+        "octree": 3,
+        "face_default": 1_000_000,
+        "face_min": 500_000,
+        "face_max": 1_500_000,
+        "allows_pbr": True,
+    },
+    "LOW_POLY": {
+        "label": "Low-Poly",
+        "blurb": "3K-15K polygons - game-ready",
+        "generate_type": "LowPoly",
+        "octree": 1,
+        "face_default": 9_000,
+        "face_min": 3_000,
+        "face_max": 15_000,
+        "allows_pbr": False,
+    },
+}
+# UI display order (matches the website dropdown).
+QUALITY_ORDER = ("HIGH_RES", "ULTRA_HIGH_RES", "LOW_POLY")
+
+
+def credit_cost(quality_key, enable_pbr):
+    """3D-credit cost for a quality + PBR choice.
+
+    Mirrors the backend's authoritative prices (alpha5.service.ts):
+    LowPoly = 48; Normal + PBR = 42; Normal without PBR = 30. (The website
+    settings modal still shows 30 for Low-Poly, but that is a known stale
+    display value — the server actually bills 48, so we show 48.)
+    """
+    if quality_key == "LOW_POLY":
+        return 48
+    if enable_pbr:
+        return 42
+    return 30
