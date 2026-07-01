@@ -15,7 +15,7 @@ it into your Blender addons directory.
 bl_info = {
     "name": "Alpha3D",
     "author": "Alpha3D",
-    "version": (0, 6, 1),
+    "version": (0, 6, 2),
     "blender": (4, 0, 0),
     "location": "View3D > Sidebar (N) > Alpha3D",
     "description": "Alpha3D's AI 3D pipeline tools, inside Blender.",

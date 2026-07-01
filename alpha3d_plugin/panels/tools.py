@@ -1,9 +1,9 @@
-"""Tools tab — Alpha3D pipeline tools.
+"""Text & Image to 3D tab — the primary generation panel.
 
-Text / Image to 3D mirrors the web app's GenerationBox: pick a quality tier
-(the same 3 levels the website has), see the credit cost, and for a text
-prompt review the generated image (Regenerate / Create 3D) before committing
-to the 3D job. The remaining pipeline tools are coming-soon stubs.
+Mirrors the web app's GenerationBox: pick a quality tier (the same 3 levels
+the website has), see the credit cost, and for a text prompt review the
+generated image (Regenerate / Create 3D) before committing to the 3D job.
+Every other pipeline tool has its own dedicated panel now.
 """
 
 import bpy
@@ -16,7 +16,7 @@ from .main import CATEGORY, REGION, SPACE
 
 class ALPHA3D_PT_tools(bpy.types.Panel):
     bl_idname = "ALPHA3D_PT_tools"
-    bl_label = "Tools"
+    bl_label = "Text & Image to 3D AI"
     bl_space_type = SPACE
     bl_region_type = REGION
     bl_category = CATEGORY
@@ -30,7 +30,6 @@ class ALPHA3D_PT_tools(bpy.types.Panel):
         busy = stage in {"IMAGING", "GENERATING"}
 
         box = layout.box()
-        box.label(text="Text / Image to 3D", icon="MESH_MONKEY")
 
         if not connected:
             box.label(text="Connect your account to generate.", icon="INFO")
