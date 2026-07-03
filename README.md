@@ -7,7 +7,7 @@
 Generate a model from a prompt or a photo, then retopologize, segment, and auto-rig it, without ever leaving Blender.
 
 ![Blender 4.0+](https://img.shields.io/badge/Blender-4.0%2B-EA7600?logo=blender&logoColor=white)
-&nbsp;![Version](https://img.shields.io/badge/version-0.6.2-1C1C1C)
+&nbsp;[![Latest release](https://img.shields.io/github/v/release/ig-shadow-walker/AlphaPlugin-Blender?label=release&color=1C1C1C)](https://github.com/ig-shadow-walker/AlphaPlugin-Blender/releases/latest)
 &nbsp;![Platform](https://img.shields.io/badge/platform-Windows_macOS_Linux-1C1C1C)
 &nbsp;[![Website](https://img.shields.io/badge/alpha3d.io-1677FF)](https://alpha3d.io)
 
@@ -15,9 +15,11 @@ Generate a model from a prompt or a photo, then retopologize, segment, and auto-
 
 [![Watch the Alpha3D for Blender demo](docs/demo.gif)](https://youtu.be/tLO_ceGiiPo)
 
+[![Download the add-on](https://img.shields.io/badge/%E2%AC%87%20Download%20the%20add--on-1C1C1C?style=for-the-badge)](https://github.com/ig-shadow-walker/AlphaPlugin-Blender/releases/latest)
+&nbsp;
 [![Watch the full demo on YouTube](https://img.shields.io/badge/%E2%96%B6%20Watch%20the%20full%20demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/tLO_ceGiiPo)
 
-<sub>The GIF is a highlight loop. Click it, or the button above, for the full walkthrough.</sub>
+<sub>The GIF is a highlight loop. Click it, or the Watch button, for the full walkthrough.</sub>
 
 </div>
 
@@ -50,7 +52,7 @@ Generated meshes import into your active scene as ordinary geometry, ready to ed
 
 The add-on is free to install.
 
-1. **Get the zip.** Download it from **[alpha3d.io/plugins](https://alpha3d.io/plugins)** (the *Get the Blender add-on* button) or from this repo's [Releases](../../releases).
+1. **Get the zip.** Download **[the latest release](../../releases/latest)** (`alpha3d_plugin.zip`), or grab it from **[alpha3d.io/plugins](https://alpha3d.io/plugins)**.
 2. In Blender: **Edit → Preferences → Add-ons → Install from Disk**, and pick the zip.
 3. Enable **Alpha3D** in the add-on list.
 4. Open the sidebar in the 3D viewport (`N`) and select the **Alpha3D** tab.
